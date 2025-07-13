@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>忍者杀无赦</title>
+<style>
+* {
+box-sizing: border-box;
+margin: 0;
+padding: 0;
+font-family: system-ui, sans-serif;
+}
+
+body {
+background: url(https://pic.rmb.bdstatic.com/bjh/news/0b324e37166eff462e691b78199564c0.png) no-repeat center center fixed;
+background-size: cover;
+min-height: 100vh;
+display: flex;
+justify-content: center;
+align-items: center;
+padding: 20px;
+backdrop-filter: blur(5px); /* 添加模糊效果 */
+}
+
+.container {
+width: 100%;
+max-width: 600px;
+background: white;
+border-radius: 8px;
+box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+padding: 20px;
+}
+
+h1 {
+text-align: center;
+margin-bottom: 20px;
+font-size: 1.5rem;
+}
+
+.input-group {
+margin-bottom: 15px;
+}
+
+label {
+display: block;
+margin-bottom: 5px;
+font-weight: 500;
+}
+
+textarea {
+width: 100%;
+height: 100px;
+padding: 10px;
+border: 1px solid #ddd;
+border-radius: 4px;
+font-size: 0.95rem;
+resize: vertical;
+}
+
+.btn-group {
+display: flex;
+gap: 10px;
+margin-bottom: 15px;
+flex-wrap: wrap;
+}
+
+button {
+flex: 1;
+min-width: 80px;
+padding: 8px 12px;
+border: 1px solid #ddd;
+border-radius: 4px;
+font-size: 0.9rem;
+cursor: pointer;
+background: #f8f9fa;
+}
+
+button:hover {
+background: #e9ecef;
+}
+
+.info {
+margin-top: 15px;
+padding: 10px;
+border: 1px solid #ddd;
+border-radius: 4px;
+font-size: 0.85rem;
+text-align: center;
+}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>忍者，该杀！</h1>
+
+<div class="input-group">
+<label for="inputText">输入文本：</label>
+<textarea id="inputText" placeholder="请输入要加密的文本内容...">DOMO,加密=SAN DESU</textarea>
+</div>
+
+<div class="btn-group">
+<button id="encryptBtn">加密</button>
+<button id="decryptBtn">解密</button>
+<button id="clearBtn">清空</button>
+</div>
+
+<div class="input-group">
+<label for="outputText">结果：</label>
+<textarea id="outputText" readonly placeholder="加密或解密的结果将显示在这里..."></textarea>
+</div>
+
+<div class="btn-group">
+<button id="copyBtn">复制结果</button>
+</div>
+</div>
+
+
+<script>
+// 字符映射表
+const charMap = {
+'00': '咿呀',
+'01': '咕哇',
+'10': 'domo',
+'11': 'desu'
+};
+
+// 加密函数
+function encrypt(text) {
+const encoder = new TextEncoder();
+const bytes = encoder.encode(text);
+
+let binaryString = '';
+for (let byte of bytes) {
+binaryString += byte.toString(2).padStart(8, '0');
+}
+
+let result = '';
+for (let i = 0; i < binaryString.length; i += 2) {
+const bits = binaryString.substring(i, i + 2);
+result += charMap[bits];
+}
+
+// 在末尾添加"忍者杀无赦"
+result += '忍者杀无赦';
+
+return result;
+}
+
+// 解密函数
+function decrypt(encodedText) {
+// 检查并移除末尾的"忍者杀无赦"
+const suffix = '忍者杀无赦';
+if (encodedText.endsWith(suffix)) {
+encodedText = encodedText.slice(0, -suffix.length);
+} else {
+return '并非忍者忍者';
+}
+
+// 将每个字符映射回2位二进制
+let binaryString = '';
+let index = 0;
+
+while (index < encodedText.length) {
+if (encodedText.startsWith('咿呀', index)) {
+binaryString += '00';
+index += 2;
+} else if (encodedText.startsWith('咕哇', index)) {
+binaryString += '01';
+index += 2;
+} else if (encodedText.startsWith('domo', index)) {
+binaryString += '10';
+index += 4;
+} else if (encodedText.startsWith('desu', index)) {
+binaryString += '11';
+index += 4;
+} else {
+return '解密失败：遇到无效字符';
+}
+}
+
+// 将二进制字符串转换为字节数组
+const bytes = [];
+for (let i = 0; i < binaryString.length; i += 8) {
+const byteString = binaryString.substring(i, i + 8);
+if (byteString.length === 8) {
+bytes.push(parseInt(byteString, 2));
+}
+}
+
+// 将字节数组转换为字符串
+const decoder = new TextDecoder();
+return decoder.decode(new Uint8Array(bytes));
+}
+
+// DOM操作
+const encryptBtn = document.getElementById('encryptBtn');
+const decryptBtn = document.getElementById('decryptBtn');
+const clearBtn = document.getElementById('clearBtn');
+const copyBtn = document.getElementById('copyBtn');
+
+encryptBtn.addEventListener('click', () => {
+const inputText = document.getElementById('inputText').value;
+const encrypted = encrypt(inputText);
+document.getElementById('outputText').value = encrypted;
+});
+
+decryptBtn.addEventListener('click', () => {
+const inputText = document.getElementById('inputText').value;
+const decrypted = decrypt(inputText);
+document.getElementById('outputText').value = decrypted;
+});
+
+clearBtn.addEventListener('click', () => {
+document.getElementById('inputText').value = '';
+document.getElementById('outputText').value = '';
+});
+
+copyBtn.addEventListener('click', () => {
+const outputText = document.getElementById('outputText');
+outputText.select();
+document.execCommand('copy');
+
+// 显示复制成功提示
+const originalText = copyBtn.textContent;
+copyBtn.textContent = '已复制!';
+setTimeout(() => {
+copyBtn.textContent = originalText;
+}, 1500);
+});
+
+// 初始示例
+encryptBtn.click();
+</script>
+</body>
+</html>
