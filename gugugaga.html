@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>咕咕嘎嘎翻译器</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+        }
+        
+        body {
+            background-color: #f8f9fa;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            color: #333;
+        }
+        
+        .container {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            width: 100%;
+            max-width: 700px;
+            padding: 30px;
+            position: relative;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            position: relative;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            font-size: 2.4rem;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+        
+        .penguin {
+            animation: float 3s ease-in-out infinite;
+            font-size: 2rem;
+        }
+        
+        .subtitle {
+            color: #6c757d;
+            font-size: 1.1rem;
+        }
+        
+        .input-group {
+            margin-bottom: 24px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #495057;
+            font-weight: 600;
+            font-size: 1.05rem;
+        }
+        
+        textarea {
+            width: 100%;
+            min-height: 120px;
+            padding: 14px;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            resize: vertical;
+            font-size: 1rem;
+            transition: all 0.2s;
+            line-height: 1.5;
+        }
+        
+        textarea:focus {
+            border-color: #3498db;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.15);
+        }
+        
+        .button-group {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            margin: 28px 0;
+            flex-wrap: wrap;
+        }
+        
+        button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            font-size: 1.05rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            min-width: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        #encrypt-btn {
+            background-color: #3498db;
+            color: white;
+        }
+        
+        #decrypt-btn {
+            background-color: #2ecc71;
+            color: white;
+        }
+        
+        #clear-btn {
+            background-color: #e74c3c;
+            color: white;
+        }
+        
+        .info {
+            background-color: #f1f3f5;
+            border-radius: 6px;
+            padding: 18px;
+            margin-top: 20px;
+            border-left: 4px solid #3498db;
+            font-size: 0.95rem;
+            color: #495057;
+        }
+        
+        .info h3 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 1.15rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .info ul {
+            padding-left: 24px;
+            line-height: 1.6;
+        }
+        
+        .info li {
+            margin-bottom: 6px;
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-6px); }
+            100% { transform: translateY(0px); }
+        }
+        
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .rotating-image {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            animation: rotate 10s linear infinite;
+            opacity: 0.6;
+            z-index: -1;
+        }
+        
+        .music-player {
+            margin: 20px auto;
+            width: 330px;
+            height: 86px;
+        }
+        
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 1.9rem;
+            }
+            
+            .button-group {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 12px;
+            }
+            
+            button {
+                width: 100%;
+                padding: 12px;
+            }
+            
+            .rotating-image {
+                width: 30px;
+                height: 30px;
+            }
+        }
+        
+        .example {
+            margin-top: 8px;
+            font-size: 0.9rem;
+            color: #6c757d;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <!-- 旋转图片 -->
+       <img src="https://i0.hdslb.com/bfs/archive/2617c5460abba4a3bbbff80dd57416a8cb7dfc22.jpg" class="rotating-image" style="bottom: 15%; left: 10%; animation-duration: 12s;"width="3000" height="200">
+    <img src="https://i0.hdslb.com/bfs/archive/2617c5460abba4a3bbbff80dd57416a8cb7dfc22.jpg" class="rotating-image" style="bottom: 25%; right: 10%; animation-duration: 15s;"width="3000" height="200">
+    
+    <div class="container">
+        <header>
+            <h1>
+                咕咕嘎嘎翻译器
+                <span class="penguin">🐧</span>
+            </h1>
+            <p class="subtitle">使用自定义咕咕嘎嘎加密和解密文本</p>
+        </header>
+        
+        <!-- 网易云音乐播放器 -->
+        <div class="music-player">
+            <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="//music.163.com/outchain/player?type=2&id=2689871525&auto=1&height=66"></iframe>
+        </div>
+
+        
+        <div class="input-group">
+            <label for="original-text">原文：</label>
+            <textarea id="original-text" placeholder="在此输入要加密的文本..."></textarea>
+            <div class="example">例如：为什么要无视灯！</div>
+        </div>
+        
+        <div class="button-group">
+            <button id="encrypt-btn">
+                <span>加密</span>
+            </button>
+            <button id="decrypt-btn">
+                <span>解密</span>
+            </button>
+            <button id="clear-btn">
+                <span>清空</span>
+            </button>
+        </div>
+        
+        <div class="input-group">
+            <label for="encrypted-text">密文：</label>
+            <textarea id="encrypted-text" placeholder="在此输入要解密的鹅语密文..."></textarea>
+            <div class="example">例如：咕咕嘎嘎咕哩刮嚓咕哩咕咕刮嚓刮嚓</div>
+        </div>
+        
+        <div class="info">
+            <h3>
+                <span>灵感菇哩菇哩菇哩哇恰灵感菇灵感菇</span>
+            </h3>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const originalText = document.getElementById('original-text');
+            const encryptedText = document.getElementById('encrypted-text');
+            const encryptBtn = document.getElementById('encrypt-btn');
+            const decryptBtn = document.getElementById('decrypt-btn');
+            const clearBtn = document.getElementById('clear-btn');
+            
+            // 鹅语字符集
+            const duckChars = ['咕咕', '嘎嘎', '咕哩', '刮嚓'];
+            
+            // 加密函数
+            function encrypt(text) {
+                if (!text) return '';
+                
+                try {
+                    // 将文本转换为UTF-8字节数组
+                    const encoder = new TextEncoder();
+                    const data = encoder.encode(text);
+                    
+                    let result = '';
+                    
+                    // 处理每个字节
+                    for (let i = 0; i < data.length; i++) {
+                        const byte = data[i];
+                        
+                        // 每个字节分成4组（每组2位）
+                        for (let shift = 6; shift >= 0; shift -= 2) {
+                            const twoBits = (byte >> shift) & 0b11;
+                            result += duckChars[twoBits];
+                        }
+                    }
+                    
+                    return result;
+                } catch (e) {
+                    return '加密失败：' + e.message;
+                }
+            }
+            
+            // 解密函数
+            function decrypt(duckText) {
+                if (!duckText) return '';
+                
+                try {
+                    // 验证输入长度
+                    if (duckText.length % 2 !== 0) {
+                        return '错误：密文长度不正确（应为偶数）';
+                    }
+                    
+                    // 将鸭语转换为索引
+                    const indices = [];
+                    for (let i = 0; i < duckText.length; i += 2) {
+                        const charPair = duckText.substring(i, i + 2);
+                        const index = duckChars.indexOf(charPair);
+                        
+                        if (index === -1) {
+                            return `错误：发现无效鹅语字符 "${charPair}"`;
+                        }
+                        
+                        indices.push(index);
+                    }
+                    
+                    // 验证索引数量
+                    if (indices.length % 4 !== 0) {
+                        return '错误：密文格式不正确（长度应为4的倍数）';
+                    }
+                    
+                    // 转换为字节数组
+                    const bytes = [];
+                    for (let i = 0; i < indices.length; i += 4) {
+                        const b1 = indices[i];
+                        const b2 = indices[i + 1];
+                        const b3 = indices[i + 2];
+                        const b4 = indices[i + 3];
+                        
+                        const byte = (b1 << 6) | (b2 << 4) | (b3 << 2) | b4;
+                        bytes.push(byte);
+                    }
+                    
+                    // 将字节数组解码为文本
+                    const decoder = new TextDecoder('utf-8');
+                    return decoder.decode(new Uint8Array(bytes));
+                } catch (e) {
+                    return '解密失败：' + e.message;
+                }
+            }
+            
+            // 事件监听器
+            encryptBtn.addEventListener('click', function() {
+                encryptedText.value = encrypt(originalText.value);
+            });
+            
+            decryptBtn.addEventListener('click', function() {
+                originalText.value = decrypt(encryptedText.value);
+            });
+            
+            clearBtn.addEventListener('click', function() {
+                originalText.value = '';
+                encryptedText.value = '';
+            });
+            
+            // 添加键盘快捷键支持
+            document.addEventListener('keydown', function(e) {
+                if (e.ctrlKey && e.key === 'Enter') {
+                    encryptedText.value = encrypt(originalText.value);
+                } else if (e.ctrlKey && e.key === 'd') {
+                    originalText.value = decrypt(encryptedText.value);
+                } else if (e.ctrlKey && e.key === 'c') {
+                    originalText.value = '';
+                    encryptedText.value = '';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
